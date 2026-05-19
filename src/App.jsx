@@ -5,6 +5,7 @@ import {
   Bell,
   Bot,
   Box,
+  Camera,
   CalendarDays,
   Check,
   ChevronRight,
@@ -17,6 +18,7 @@ import {
   Home,
   Image as ImageIcon,
   ListOrdered,
+  Layers3,
   Mail,
   Menu,
   MessageSquare,
@@ -26,6 +28,7 @@ import {
   Printer,
   RefreshCcw,
   Ruler,
+  Rotate3D,
   ScanLine,
   Search,
   Send,
@@ -395,25 +398,29 @@ function ModelPreviewCard({ compact = false }) {
       <div className="model-toolbar">
         <div>
           <div className="model-title">case_v3.stl</div>
-          <div className="model-sub">изолированный 3D-просмотр</div>
+          <div className="model-sub">готово к оценке · 3D preview</div>
         </div>
-        <span className="badge lime">STL</span>
+        <div className="model-actions">
+          <span className="model-status-dot" />
+          <span className="badge lime">STL</span>
+        </div>
       </div>
       <div className="model-stage" aria-label="3D модель">
         <div className="axis x" />
         <div className="axis y" />
+        <div className="model-grid-glow" />
         <div className="model-cube">
           <span className="face front" />
           <span className="face top" />
           <span className="face side" />
         </div>
         <div className="model-shadow" />
-        <div className="model-hint">вращение · зум · крупно</div>
+        <div className="model-hint"><Rotate3D size={12} /> вращение · зум · крупно</div>
       </div>
       <div className="model-meta">
-        <span>120×68×42 мм</span>
-        <span>≈ 86 см³</span>
-        <span>PETG</span>
+        <span><Ruler size={11} />120×68×42</span>
+        <span><Box size={11} />86 см³</span>
+        <span><Layers3 size={11} />PETG</span>
       </div>
     </div>
   );
@@ -438,8 +445,8 @@ function HomeScreen({ setScreen, openMenu, order, setOrder }) {
   const quickActions = [
     ["Узнать цену", "consult"],
     ["Создать заявку", "create"],
-    ["Загрузить 3D-модель", "upload"],
-    ["Модели нет", "photo"],
+    ["Открыть 3D", "upload"],
+    ["Сделать по фото", "photo"],
   ];
 
   const startFlow = (mode) => {
@@ -469,23 +476,33 @@ function HomeScreen({ setScreen, openMenu, order, setOrder }) {
       <Screen className="chat-first-screen">
         <div className="chat-hero">
           <div className="kicker"><Sparkles size={13} /> Step3D Bot</div>
-          <h1 className="h1">Чат + 3D модель</h1>
-          <p className="text">Простой диалог: загрузите модель, смотрите её в 3D и обсуждайте заказ в одном месте.</p>
+          <h1 className="h1">Опишите задачу — модель рядом</h1>
+          <p className="text">Минимум экранов: бот ведёт по заказу, а 3D-превью остаётся под рукой для проверки формы, размеров и материала.</p>
+          <div className="hero-status-row">
+            <span><span className="live-dot" /> онлайн оценка</span>
+            <span>STL · OBJ · GLB · STEP</span>
+          </div>
         </div>
 
         <div className="pinned-model-panel">
           <ModelPreviewCard compact />
         </div>
 
+        <div className="progress-rail">
+          <div className="progress-step done"><Upload size={13} />Файл</div>
+          <div className="progress-step active"><MessageSquare size={13} />Диалог</div>
+          <div className="progress-step"><Check size={13} />Оценка</div>
+        </div>
+
         <div className="chat-thread main-thread">
-          <ChatMessage delay={0.03}>Привет. Я помогу оценить, напечатать или создать 3D-модель без длинных форм.</ChatMessage>
+          <ChatMessage delay={0.03}>Привет. Загрузите 3D-модель или опишите деталь — я соберу данные для оценки без длинной анкеты.</ChatMessage>
           <ChatMessage from="user" delay={0.08}>Хочу загрузить модель и понять цену.</ChatMessage>
-          <ChatMessage delay={0.13}>Отлично. Модель откроется здесь в 3D, а я задам только нужные вопросы: материал, количество, срок и контакт.</ChatMessage>
+          <ChatMessage delay={0.13}>Отлично. Я держу модель в отдельной 3D-панели и задаю только важные вопросы: назначение, материал, количество, срок.</ChatMessage>
           <div className="chat-row bot model-message">
             <div className="chat-avatar"><Box size={15} /></div>
             <div className="chat-bubble model-bubble"><ModelPreviewCard /></div>
           </div>
-          <ChatMessage delay={0.18}>Можно начать с файла, фото или обычного описания. Если модели нет — поможем сделать.</ChatMessage>
+          <ChatMessage delay={0.18}>В конце покажу чистое резюме заявки: файл, размеры, материал, срок и контакт — перед отправкой можно поправить.</ChatMessage>
         </div>
 
         <div className="quick-chat-actions primary-actions">
