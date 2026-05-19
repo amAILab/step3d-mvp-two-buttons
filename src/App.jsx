@@ -278,15 +278,15 @@ function Header({ title, screen, setScreen, onMenu, backTo = "home" }) {
         <div className="header-brand">STEP_3D</div>
         <div className="header-name">{title}</div>
       </div>
-      <button className="icon-button" onClick={onMenu} aria-label="Подробнее">
-        <LogoMark />
+      <button className="icon-button" onClick={() => setScreen("profile")} aria-label="Профиль">
+        <User size={21} />
       </button>
     </header>
   );
 }
 
-function Screen({ children, extraBottom = false }) {
-  return <main className={cn("content", extraBottom && "extra-bottom")}>{children}</main>;
+function Screen({ children, extraBottom = false, className = "" }) {
+  return <main className={cn("content", extraBottom && "extra-bottom", className)}>{children}</main>;
 }
 
 function Card({ children, className = "", strong = false, dark = false, ...props }) {
@@ -356,11 +356,8 @@ function SummaryRow({ label, value }) {
 
 function TabBar({ screen, setScreen }) {
   const tabs = [
-    { id: "home", label: "Главная", icon: Home },
-    { id: "orders", label: "Заказы", icon: ListOrdered },
+    { id: "help", label: "Узнать", icon: HelpCircle },
     { id: "order", label: "Создать", icon: Send },
-    { id: "help", label: "Помощь", icon: HelpCircle },
-    { id: "profile", label: "Профиль", icon: User },
   ];
   return (
     <nav className="tabbar">
@@ -877,33 +874,65 @@ function StatusScreen({ setScreen, openMenu, selectedOrder, orderNumber, order }
 }
 
 function HelpScreen({ setScreen, openMenu }) {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [draft, setDraft] = useState("");
+  const quickQuestions = ["Какие файлы?", "Сколько стоит?", "Нет модели", "Сроки"];
+  const messages = [
+    { from: "bot", text: "Привет. Я помогу быстро понять, что нужно для заявки STEP_3D." },
+    { from: "user", text: "Хочу узнать, можно ли изготовить деталь." },
+    { from: "bot", text: "Можно. Пришлите STL, STEP, OBJ, 3MF, фото, эскиз, PDF или просто описание задачи." },
+    { from: "bot", text: "Для быстрой оценки нужны: размеры, материал, назначение детали, срок и 1–3 фото или файл модели." },
+    { from: "user", text: "А если 3D-модели нет?" },
+    { from: "bot", text: "Тоже подходит. Опишите деталь, приложите фото с линейкой — мы оценим моделирование, скан или реверс-инжиниринг." },
+  ];
+
+  const sendDraft = () => {
+    if (draft.trim()) setScreen("order");
+  };
+
   return (
     <div className="screen-root">
       <Header title="Помощь" screen="help" setScreen={setScreen} onMenu={openMenu} />
-      <Screen>
-        <Card strong>
-          <div className="row between gap-4">
-            <div>
-              <div className="kicker">FAQ</div>
-              <h2 className="h2">Как оформить задачу</h2>
-              <p className="text">Подсказки, чтобы заказ быстрее попал в оценку.</p>
-            </div>
-            <div className="go-circle" style={{ background: "var(--amber)" }}><HelpCircle size={26} /></div>
+      <Screen className="chat-screen">
+        <div className="chat-intro">
+          <div>
+            <div className="kicker"><MessageSquare size={13} /> Чат-помощник</div>
+            <h2 className="h2">Спросите как в чате</h2>
+            <p className="text">Диалог подскажет, что отправить для оценки заказа.</p>
           </div>
-        </Card>
-        <div className="grid mt-4" style={{ gap: 12 }}>
-          {HELP_ITEMS.map(([title, text], index) => (
-            <button key={title} className="order-card" onClick={() => setOpenIndex(openIndex === index ? -1 : index)}>
-              <div className="row between gap-3">
-                <div className="title-sm">{title}</div>
-                <ChevronRight size={18} style={{ transform: openIndex === index ? "rotate(90deg)" : "none", transition: "transform .16s ease" }} />
-              </div>
-              {openIndex === index && <p className="text">{text}</p>}
-            </button>
+          <div className="chat-bot-avatar"><Bot size={25} /></div>
+        </div>
+
+        <div className="chat-thread">
+          {messages.map((message, index) => (
+            <motion.div
+              key={`${message.from}-${index}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04 }}
+              className={`chat-row ${message.from === "user" ? "user" : "bot"}`}
+            >
+              {message.from === "bot" && <div className="chat-avatar"><Bot size={15} /></div>}
+              <div className="chat-bubble">{message.text}</div>
+            </motion.div>
           ))}
         </div>
-        <AppButton className="mt-4" onClick={() => setScreen("order")} icon={ChevronRight}>Создать</AppButton>
+
+        <div className="quick-chat-actions">
+          {quickQuestions.map((question) => (
+            <button key={question} onClick={() => setDraft(question)}>{question}</button>
+          ))}
+        </div>
+
+        <div className="chat-composer">
+          <button className="chat-attach" aria-label="Голос"><Mic size={18} /></button>
+          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите вопрос или задачу..." />
+          <button className="chat-send" onClick={sendDraft} aria-label="Отправить"><Send size={18} /></button>
+        </div>
+
+        <button className="chat-create" onClick={() => setScreen("order")}>
+          <span>Перейти к заявке</span>
+          <ChevronRight size={18} />
+        </button>
       </Screen>
     </div>
   );
