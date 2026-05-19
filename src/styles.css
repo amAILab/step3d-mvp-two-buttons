@@ -590,7 +590,7 @@ button { cursor: pointer; }
 
 /* Chat-first Step3D architecture */
 .chat-home-root .header { background: rgba(247,247,245,.96); }
-.chat-first-screen { padding-bottom: 132px; }
+.chat-first-screen { padding-bottom: 162px; }
 .chat-hero {
   border: 2px solid var(--ink);
   border-radius: 30px;
@@ -776,6 +776,33 @@ body {
   background: #c7f442;
   box-shadow: 0 0 18px rgba(199,244,66,.85);
 }
+.decision-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+.decision-strip div {
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  padding: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+.decision-strip span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(199,244,66,.14);
+  color: #c7f442;
+  font-size: 11px;
+  font-weight: 950;
+}
+.decision-strip b { display: block; margin-top: 8px; color: #f7f8f8; font-size: 12px; }
+.decision-strip small { display: block; margin-top: 3px; color: #8a8f98; font-size: 10px; line-height: 1.25; font-weight: 750; }
 .progress-rail {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -898,6 +925,67 @@ body {
   font-weight: 850;
 }
 .learn-actions button:first-child { background: rgba(199,244,66,.14); border-color: rgba(199,244,66,.24); color: #eaffb7; }
+.prompt-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 0 2px;
+}
+.prompt-chips button {
+  white-space: nowrap;
+  border: 1px solid rgba(199,244,66,.16);
+  border-radius: 999px;
+  background: rgba(199,244,66,.08);
+  color: #dfffa0;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 850;
+}
+.handoff-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 10px;
+  border: 1px solid rgba(255,159,67,.18);
+  border-radius: 16px;
+  background: rgba(255,159,67,.08);
+  color: #ffd6a8;
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 750;
+}
+.mini-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 999px;
+  color: #8a8f98;
+  background: rgba(255,255,255,.04);
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.smart-card { background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.025)); }
+.trust-card { border-color: rgba(199,244,66,.16); background: rgba(199,244,66,.06); }
+.trust-points { display: grid; gap: 8px; }
+.trust-points span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e9ffba;
+  font-size: 12px;
+  font-weight: 850;
+}
+.trust-points span::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: #c7f442;
+  box-shadow: 0 0 12px rgba(199,244,66,.55);
+}
 .primary-actions button:first-child,
 .primary-actions button:nth-child(2) {
   color: #0a0a0a;
@@ -930,4 +1018,9 @@ body {
   .chat-hero .h1 { font-size: 28px; }
   .model-card.compact .model-stage { height: 124px; }
   .progress-step { font-size: 10px; }
+  .decision-strip { grid-template-columns: 1fr; }
+  .decision-strip div { display: grid; grid-template-columns: 28px 1fr; column-gap: 8px; align-items: center; }
+  .decision-strip b { margin-top: 0; }
+  .decision-strip small { grid-column: 2; }
+  .hero-status-row span, .progress-step, .chat-bubble, .title-sm, .text { overflow-wrap: anywhere; }
 }

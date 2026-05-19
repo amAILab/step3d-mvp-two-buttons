@@ -479,9 +479,16 @@ function HomeScreen({ setScreen, openMenu, order, setOrder }) {
           <h1 className="h1">Опишите задачу — модель рядом</h1>
           <p className="text">Минимум экранов: бот ведёт по заказу, а 3D-превью остаётся под рукой для проверки формы, размеров и материала.</p>
           <div className="hero-status-row">
-            <span><span className="live-dot" /> онлайн оценка</span>
+            <span><span className="live-dot" /> инженер на связи</span>
             <span>STL · OBJ · GLB · STEP</span>
+            <span>без оплаты на старте</span>
           </div>
+        </div>
+
+        <div className="decision-strip">
+          <div><span>1</span><b>Опишите</b><small>идею, поломку или файл</small></div>
+          <div><span>2</span><b>Уточните</b><small>размер, материал, срок</small></div>
+          <div><span>3</span><b>Получите</b><small>оценку и маршрут</small></div>
         </div>
 
         <div className="pinned-model-panel">
@@ -625,14 +632,20 @@ function OrderScreen({ setScreen, openMenu, order, setOrder, showToast }) {
             maxLength={500}
             value={order.task}
             onChange={(event) => { setShowWarning(false); setOrder({ ...order, task: event.target.value }); }}
-            placeholder={isCreate ? "Что нужно создать: назначение, размеры, материал, срок, особенности..." : "Что хотите узнать: можно ли сделать, примерная цена, срок, что есть на руках..."}
+            placeholder={isCreate ? "Например: корпус 120×80 мм, нужен PETG, 5 штук, есть STEP-файл..." : "Например: есть фото сломанной детали, хочу понять можно ли восстановить и сколько стоит..."}
           />
+          <div className="prompt-chips">
+            {(isCreate ? ["Есть 3D-файл", "Нужна прочная деталь", "Сделать 5 штук"] : ["Можно ли по фото?", "Какой материал?", "Сколько стоит?"]).map((hint) => (
+              <button key={hint} type="button" onClick={() => setOrder({ ...order, task: order.task ? `${order.task} ${hint}` : hint })}>{hint}</button>
+            ))}
+          </div>
           {showWarning && <div className="warning">Добавьте короткое описание задачи.</div>}
 
           <div className="grid grid-2 mt-3">
             <button className="btn dark" onClick={addFile}><span><Upload size={18} /> Файл {order.files.length ? `· ${order.files.length}` : ""}</span></button>
             <button className={cn("btn", order.voice ? "lime" : "light")} onClick={() => setOrder({ ...order, voice: !order.voice })}><span><Mic size={18} /> Голос</span></button>
           </div>
+          <div className="handoff-note"><ShieldCheck size={15} /> Тяжёлые STL/STEP/CAD-файлы можно дослать в Telegram с номером заявки. Конфиденциальные модели — после согласования/NDA.</div>
 
           {order.voice && <div className="voice-on"><span className="pulse-dot" /> Голосовая заметка включена</div>}
           {order.files.length > 0 && (
@@ -647,8 +660,11 @@ function OrderScreen({ setScreen, openMenu, order, setOrder, showToast }) {
           )}
         </Card>
 
-        <Card className="mt-4">
-          <div className="title-sm">Параметры</div>
+        <Card className="mt-4 smart-card">
+          <div className="row between gap-3">
+            <div className="title-sm">Параметры</div>
+            <span className="mini-badge">можно пропустить</span>
+          </div>
           <div className="mt-3">
             <div className="label" style={{ marginBottom: 8 }}>Материал</div>
             <div className="chips">{MATERIALS.map((material) => <TagButton key={material} active={order.material === material} onClick={() => setOrder({ ...order, material })}>{material}</TagButton>)}</div>
@@ -724,6 +740,14 @@ function ReviewScreen({ setScreen, openMenu, order, submitOrder }) {
           <SummaryRow label="Срок" value={order.deadline} />
           <SummaryRow label="Файлы" value={order.files.length ? order.files.join(", ") : "без файла"} />
           <SummaryRow label="Контакт" value={order.contact} />
+        </Card>
+
+        <Card className="trust-card mt-4">
+          <div className="trust-points">
+            <span>Без оплаты на старте</span>
+            <span>Счёт и документы для B2B</span>
+            <span>NDA для CAD</span>
+          </div>
         </Card>
 
         <Card className="dark mt-4">
