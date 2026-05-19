@@ -587,3 +587,89 @@ button { cursor: pointer; }
   .phone { width: 100vw; height: 100vh; border: 0; border-radius: 0; }
   .phone::before { display: none; }
 }
+
+/* Chat-first Step3D architecture */
+.chat-home-root .header { background: rgba(247,247,245,.96); }
+.chat-first-screen { padding-bottom: 132px; }
+.chat-hero {
+  border: 2px solid var(--ink);
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ffffff 0%, #f5ffd8 100%);
+  padding: 18px;
+  box-shadow: var(--shadow-hard);
+}
+.pinned-model-panel {
+  position: sticky;
+  top: -2px;
+  z-index: 8;
+  margin-top: 16px;
+}
+.model-card {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #101010;
+  color: white;
+  box-shadow: 0 16px 42px rgba(0,0,0,.16);
+}
+.model-card.compact { border: 2px solid var(--ink); box-shadow: 0 7px 0 var(--ink); }
+.model-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 13px 0;
+}
+.model-title { font-size: 13px; font-weight: 950; letter-spacing: -.02em; }
+.model-sub { margin-top: 2px; color: rgba(255,255,255,.52); font-size: 11px; font-weight: 800; }
+.model-stage {
+  position: relative;
+  height: 154px;
+  margin: 10px 12px 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(199,244,66,.24), transparent 34%),
+    linear-gradient(135deg, #1b1b1b 0%, #050505 100%);
+  perspective: 620px;
+}
+.model-card.compact .model-stage { height: 132px; }
+.model-stage::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  background-image: linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.model-cube {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 86px;
+  height: 70px;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateX(-24deg) rotateY(36deg);
+  animation: cubeTurn 6s ease-in-out infinite;
+}
+.face { position: absolute; border: 2px solid #0b0b0b; background: var(--lime); box-shadow: inset -12px -12px 0 rgba(0,0,0,.08); }
+.face.front { width: 86px; height: 70px; transform: translateZ(24px); border-radius: 10px; }
+.face.top { width: 86px; height: 48px; transform: rotateX(90deg) translateZ(24px); transform-origin: top; background: #e7ff82; border-radius: 10px; }
+.face.side { width: 48px; height: 70px; right: -24px; transform: rotateY(90deg) translateZ(62px); background: #9fd12f; border-radius: 10px; }
+.model-shadow { position: absolute; left: 50%; bottom: 28px; width: 124px; height: 20px; transform: translateX(-50%); border-radius: 999px; background: rgba(0,0,0,.5); filter: blur(6px); }
+.model-hint { position: absolute; left: 10px; bottom: 10px; border-radius: 999px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.72); padding: 6px 9px; font-size: 10px; font-weight: 900; }
+.axis { position: absolute; right: 18px; bottom: 20px; transform-origin: left center; border-radius: 99px; }
+.axis.x { width: 34px; height: 3px; background: var(--orange); transform: rotate(-22deg); }
+.axis.y { width: 28px; height: 3px; background: var(--lime); transform: rotate(-92deg); }
+.model-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 12px 12px; }
+.model-meta span { border-radius: 999px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.72); padding: 7px 6px; text-align: center; font-size: 10px; font-weight: 900; }
+@keyframes cubeTurn { 0%,100% { transform: translate(-50%, -50%) rotateX(-24deg) rotateY(30deg); } 50% { transform: translate(-50%, -54%) rotateX(-18deg) rotateY(52deg); } }
+.main-thread { margin-top: 18px; }
+.model-message { align-items: stretch; }
+.model-bubble { max-width: 88%; padding: 0; overflow: hidden; background: transparent; border: 0; box-shadow: none; }
+.model-bubble .model-card { border-radius: 22px; }
+.primary-actions button:first-child { background: var(--lime); border-color: #a7d820; }
+.primary-actions button:nth-child(2) { background: var(--orange); border-color: #e18324; }
+.home-composer { position: sticky; bottom: 0; z-index: 9; }

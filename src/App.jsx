@@ -389,56 +389,120 @@ function Toast({ message }) {
   );
 }
 
-function HomeScreen({ setScreen, openMenu, order, setOrder, orders }) {
-  const recentOrder = orders[0];
-  const recentService = getService(recentOrder.serviceId);
-
+function ModelPreviewCard({ compact = false }) {
   return (
-    <div className="screen-root">
-      <Header title="Главная" screen="home" setScreen={setScreen} onMenu={openMenu} />
-      <Screen>
-        <Card strong>
-          <div className="row between gap-4">
-            <div className="min-w-0">
-              <div className="kicker"><Sparkles size={13} /> 3D lab</div>
-              <h1 className="h1">STEP_3D Bot</h1>
-              <p className="text">Узнайте о возможностях STEP_3D или создайте заявку за пару минут.</p>
-            </div>
-            <Mascot size="sm" label="#bot" />
-          </div>
-        </Card>
-
-        <div className="grid grid-2 mt-4">
-          <button className="cta-card lime" onClick={() => { setOrder({ ...order, mode: "consult" }); setScreen("order"); }}>
-            <HelpCircle size={28} />
-            <div className="cta-title">Узнать</div>
-            <div className="cta-sub">возможность, цена, срок</div>
-          </button>
-          <button className="cta-card orange" onClick={() => { setOrder({ ...order, mode: "create" }); setScreen("order"); }}>
-            <ClipboardList size={28} />
-            <div className="cta-title">Создать</div>
-            <div className="cta-sub">заявку на изготовление</div>
-          </button>
+    <div className={cn("model-card", compact && "compact")}>
+      <div className="model-toolbar">
+        <div>
+          <div className="model-title">case_v3.stl</div>
+          <div className="model-sub">изолированный 3D-просмотр</div>
         </div>
-
-        <Card className="mt-4">
-          <div className="row between gap-3">
-            <div className="row gap-3 min-w-0">
-              <ServiceIcon service={recentService} small />
-              <div className="min-w-0">
-                <div className="title-sm">Последний заказ</div>
-                <div className="small">{recentOrder.id}</div>
-              </div>
-            </div>
-            <StatusBadge status={recentOrder.status} />
-          </div>
-          <p className="small mt-3">История и статусы доступны во вкладке «Заказы».</p>
-        </Card>
-      </Screen>
+        <span className="badge lime">STL</span>
+      </div>
+      <div className="model-stage" aria-label="3D модель">
+        <div className="axis x" />
+        <div className="axis y" />
+        <div className="model-cube">
+          <span className="face front" />
+          <span className="face top" />
+          <span className="face side" />
+        </div>
+        <div className="model-shadow" />
+        <div className="model-hint">вращение · зум · крупно</div>
+      </div>
+      <div className="model-meta">
+        <span>120×68×42 мм</span>
+        <span>≈ 86 см³</span>
+        <span>PETG</span>
+      </div>
     </div>
   );
 }
 
+function ChatMessage({ from = "bot", children, delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay }}
+      className={`chat-row ${from === "user" ? "user" : "bot"}`}
+    >
+      {from === "bot" && <div className="chat-avatar"><Bot size={15} /></div>}
+      <div className="chat-bubble">{children}</div>
+    </motion.div>
+  );
+}
+
+function HomeScreen({ setScreen, openMenu, order, setOrder }) {
+  const [draft, setDraft] = useState("");
+  const quickActions = [
+    ["Узнать цену", "consult"],
+    ["Создать заявку", "create"],
+    ["Загрузить 3D-модель", "upload"],
+    ["Модели нет", "photo"],
+  ];
+
+  const startFlow = (mode) => {
+    if (mode === "upload") {
+      setOrder({ ...order, mode: "create", files: order.files.length ? order.files : ["case_v3.stl"] });
+      setScreen("order");
+      return;
+    }
+    if (mode === "photo") {
+      setOrder({ ...order, mode: "consult", serviceId: "model", task: order.task || "Есть фото детали, нужно понять возможность моделирования и печати." });
+      setScreen("order");
+      return;
+    }
+    setOrder({ ...order, mode });
+    setScreen("order");
+  };
+
+  const sendDraft = () => {
+    if (!draft.trim()) return;
+    setOrder({ ...order, mode: "consult", task: draft.trim() });
+    setScreen("order");
+  };
+
+  return (
+    <div className="screen-root chat-home-root">
+      <Header title="3D чат" screen="home" setScreen={setScreen} onMenu={openMenu} />
+      <Screen className="chat-first-screen">
+        <div className="chat-hero">
+          <div className="kicker"><Sparkles size={13} /> Step3D Bot</div>
+          <h1 className="h1">Чат + 3D модель</h1>
+          <p className="text">Простой диалог: загрузите модель, смотрите её в 3D и обсуждайте заказ в одном месте.</p>
+        </div>
+
+        <div className="pinned-model-panel">
+          <ModelPreviewCard compact />
+        </div>
+
+        <div className="chat-thread main-thread">
+          <ChatMessage delay={0.03}>Привет. Я помогу оценить, напечатать или создать 3D-модель без длинных форм.</ChatMessage>
+          <ChatMessage from="user" delay={0.08}>Хочу загрузить модель и понять цену.</ChatMessage>
+          <ChatMessage delay={0.13}>Отлично. Модель откроется здесь в 3D, а я задам только нужные вопросы: материал, количество, срок и контакт.</ChatMessage>
+          <div className="chat-row bot model-message">
+            <div className="chat-avatar"><Box size={15} /></div>
+            <div className="chat-bubble model-bubble"><ModelPreviewCard /></div>
+          </div>
+          <ChatMessage delay={0.18}>Можно начать с файла, фото или обычного описания. Если модели нет — поможем сделать.</ChatMessage>
+        </div>
+
+        <div className="quick-chat-actions primary-actions">
+          {quickActions.map(([label, mode]) => (
+            <button key={label} onClick={() => startFlow(mode)}>{label}</button>
+          ))}
+        </div>
+
+        <div className="chat-composer home-composer">
+          <button className="chat-attach" onClick={() => startFlow("upload")} aria-label="Загрузить модель"><Upload size={18} /></button>
+          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите задачу: напечатать, оценить, сделать по фото..." />
+          <button className="chat-send" onClick={sendDraft} aria-label="Отправить"><Send size={18} /></button>
+        </div>
+      </Screen>
+    </div>
+  );
+}
 function ServicesScreen({ setScreen, openMenu, order, setOrder }) {
   return (
     <div className="screen-root">
@@ -873,20 +937,20 @@ function StatusScreen({ setScreen, openMenu, selectedOrder, orderNumber, order }
   );
 }
 
-function HelpScreen({ setScreen, openMenu }) {
+function HelpScreen({ setScreen, openMenu, order, setOrder }) {
   const [draft, setDraft] = useState("");
-  const quickQuestions = ["Какие файлы?", "Сколько стоит?", "Нет модели", "Сроки"];
+  const quickQuestions = ["Загрузить модель", "Узнать цену", "Нет модели", "Сроки"];
   const messages = [
-    { from: "bot", text: "Привет. Я помогу быстро понять, что нужно для заявки STEP_3D." },
+    { from: "bot", text: "Привет. Я чат-бот STEP_3D: можно говорить текстом, а модель смотреть здесь же в 3D." },
     { from: "user", text: "Хочу узнать, можно ли изготовить деталь." },
-    { from: "bot", text: "Можно. Пришлите STL, STEP, OBJ, 3MF, фото, эскиз, PDF или просто описание задачи." },
+    { from: "bot", text: "Можно. Пришлите STL, OBJ, GLB, STEP, 3MF, фото, эскиз, PDF или просто описание задачи." },
     { from: "bot", text: "Для быстрой оценки нужны: размеры, материал, назначение детали, срок и 1–3 фото или файл модели." },
     { from: "user", text: "А если 3D-модели нет?" },
     { from: "bot", text: "Тоже подходит. Опишите деталь, приложите фото с линейкой — мы оценим моделирование, скан или реверс-инжиниринг." },
   ];
 
   const sendDraft = () => {
-    if (draft.trim()) setScreen("order");
+    if (draft.trim()) { setOrder({ ...order, task: draft.trim(), mode: "consult" }); setScreen("order"); }
   };
 
   return (
@@ -897,7 +961,7 @@ function HelpScreen({ setScreen, openMenu }) {
           <div>
             <div className="kicker"><MessageSquare size={13} /> Чат-помощник</div>
             <h2 className="h2">Спросите как в чате</h2>
-            <p className="text">Диалог подскажет, что отправить для оценки заказа.</p>
+            <p className="text">Диалог ведёт по задаче, а 3D-карточка показывает модель изолированно и удобно.</p>
           </div>
           <div className="chat-bot-avatar"><Bot size={25} /></div>
         </div>
@@ -915,6 +979,11 @@ function HelpScreen({ setScreen, openMenu }) {
               <div className="chat-bubble">{message.text}</div>
             </motion.div>
           ))}
+        </div>
+
+        <div className="chat-row bot model-message">
+          <div className="chat-avatar"><Box size={15} /></div>
+          <div className="chat-bubble model-bubble"><ModelPreviewCard /></div>
         </div>
 
         <div className="quick-chat-actions">
@@ -1168,8 +1237,8 @@ function DesktopNotes({ setScreen }) {
   return (
     <aside className="desktop-panel">
       <div className="desktop-kicker"><Sparkles size={17} /> UX/UI polished MVP</div>
-      <h1 className="desktop-title">STEP_3D Bot<br />mobile MVP</h1>
-      <p className="desktop-copy">Версия доведена до чистого продукта: меньше шума, понятнее путь заказа, аккуратная навигация, проверка заявки и готовность к Telegram WebApp.</p>
+      <h1 className="desktop-title">STEP_3D<br />chat + 3D</h1>
+      <p className="desktop-copy">Новая архитектура: один чат-бот, внутри которого пользователь загружает модель, видит её в 3D и тут же обсуждает цену, срок и производство.</p>
       <div className="desktop-links">
         {items.map(([Icon, title, sub, target]) => (
           <button key={title} className="desktop-link" onClick={() => setScreen(target)}>
@@ -1265,7 +1334,7 @@ export default function App() {
               {screen === "status" && <StatusScreen setScreen={setScreen} openMenu={openMenu} selectedOrder={selectedOrder} orderNumber={orderNumber} order={order} />}
               {screen === "orders" && <OrdersScreen setScreen={setScreen} openMenu={openMenu} orders={orders} setSelectedOrderId={setSelectedOrderId} />}
               {screen === "orderDetails" && <OrderDetailsScreen setScreen={setScreen} openMenu={openMenu} selectedOrder={selectedOrder} />}
-              {screen === "help" && <HelpScreen setScreen={setScreen} openMenu={openMenu} />}
+              {screen === "help" && <HelpScreen setScreen={setScreen} openMenu={openMenu} order={order} setOrder={setOrder} />}
               {screen === "profile" && <ProfileScreen setScreen={setScreen} openMenu={openMenu} profile={profile} setProfile={setProfile} orders={orders} />}
               {screen === "manager" && <ManagerScreen setScreen={setScreen} openMenu={openMenu} orders={orders} setOrders={setOrders} setSelectedOrderId={setSelectedOrderId} integration={integration} showToast={showToast} />}
               {screen === "integration" && <IntegrationScreen setScreen={setScreen} openMenu={openMenu} integration={integration} setIntegration={setIntegration} order={order} profile={profile} orderNumber={orderNumber} showToast={showToast} />}
