@@ -442,11 +442,6 @@ function ChatMessage({ from = "bot", children, delay = 0 }) {
 
 function HomeScreen({ setScreen, openMenu, order, setOrder }) {
   const [draft, setDraft] = useState("");
-  const quickActions = [
-    ["Узнать", "consult"],
-    ["Создать", "create"],
-    ["Файл", "upload"],
-  ];
 
   const startFlow = (mode) => {
     if (mode === "upload") {
@@ -468,40 +463,36 @@ function HomeScreen({ setScreen, openMenu, order, setOrder }) {
     <div className="screen-root single-work-root">
       <Header title="STEP_3D" screen="home" setScreen={setScreen} onMenu={openMenu} />
       <Screen className="single-work-screen">
-        <section className="single-hero">
-          <div>
-            <div className="kicker"><Sparkles size={13} /> один экран</div>
-            <h1 className="h1">Чат и 3D — рядом</h1>
-            <p className="text">Работаем в одном светлом пространстве: пишете задачу, смотрите модель, сразу уточняете цену, материал и срок.</p>
-          </div>
-          <div className="single-status"><span className="live-dot" /> инженер онлайн</div>
+        <section className="ai-hero">
+          <div className="ai-status"><span className="live-dot" /> инженер + AI онлайн</div>
+          <h1>Спросите про деталь</h1>
+          <p>Файл, фото или текст. Мы сразу покажем 3D, оценим печать и скажем следующий шаг.</p>
         </section>
 
-        <section className="single-workspace">
-          <div className="viewer-pane">
-            <ModelPreviewCard compact />
+        <section className="ai-chat-card">
+          <div className="ai-mini-viewer">
+            <div>
+              <div className="ai-file">case_v3.stl</div>
+              <div className="ai-file-meta">120×68×42 мм · PETG</div>
+            </div>
+            <div className="ai-cube" aria-hidden="true"><span /></div>
           </div>
-          <div className="workspace-steps">
-            <span>Модель</span>
-            <span>Диалог</span>
-            <span>Оценка</span>
-          </div>
+
           <div className="chat-thread single-thread">
-            <ChatMessage delay={0.03}>Привет. Пришлите 3D-файл, фото или просто опишите деталь — всё разбираем здесь же.</ChatMessage>
-            <ChatMessage from="user" delay={0.08}>Хочу понять, можно ли это напечатать и сколько будет стоить.</ChatMessage>
-            <ChatMessage delay={0.13}>Можно. Я покажу модель в 3D, уточню размеры, материал и срок — без длинной анкеты и без оплаты на старте.</ChatMessage>
+            <ChatMessage delay={0.03}>Пришлите модель или опишите задачу одним сообщением.</ChatMessage>
+            <ChatMessage from="user" delay={0.08}>Можно напечатать корпус?</ChatMessage>
+            <ChatMessage delay={0.13}>Да. Нужны размер, материал и количество. Файл можно прикрепить ниже.</ChatMessage>
           </div>
         </section>
 
-        <div className="single-actions">
-          {quickActions.map(([label, mode]) => (
-            <button key={label} onClick={() => startFlow(mode)}>{label}</button>
-          ))}
+        <div className="ai-primary-actions">
+          <button onClick={() => startFlow("consult")}>Узнать цену</button>
+          <button onClick={() => startFlow("create")}>Создать заказ</button>
         </div>
 
         <div className="single-composer">
           <button className="composer-icon" onClick={() => startFlow("upload")} aria-label="Загрузить файл"><Upload size={18} /></button>
-          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите задачу или вопрос по модели..." />
+          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите задачу..." />
           <button className="composer-send" onClick={sendDraft} aria-label="Отправить"><Send size={18} /></button>
         </div>
       </Screen>
