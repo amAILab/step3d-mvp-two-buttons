@@ -1024,3 +1024,166 @@ body {
   .decision-strip small { grid-column: 2; }
   .hero-status-row span, .progress-step, .chat-bubble, .title-sm, .text { overflow-wrap: anywhere; }
 }
+
+
+/* Single-screen light workspace */
+.single-work-root,
+.single-work-root .content {
+  background: linear-gradient(180deg, #fbfbf8 0%, #f2f3ee 100%);
+}
+.single-work-root .header {
+  background: rgba(251,251,248,.88) !important;
+  border-bottom: 1px solid rgba(17,17,17,.06);
+  backdrop-filter: blur(22px);
+}
+.single-work-root .header-name,
+.single-work-root .h1,
+.single-work-root .h2,
+.single-work-root .title-sm { color: #111; }
+.single-work-root .header-brand,
+.single-work-root .text,
+.single-work-root .small { color: #6f736b; }
+.single-work-root .kicker { color: #6b9700; }
+.single-work-screen { padding: 16px 16px 116px; }
+.single-hero {
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(17,17,17,.08);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 85% 8%, rgba(199,244,66,.42), transparent 34%),
+    linear-gradient(145deg, #ffffff 0%, #f7f8f1 100%);
+  padding: 18px;
+  box-shadow: 0 18px 50px rgba(20,24,16,.08);
+}
+.single-hero .h1 { font-size: 34px; letter-spacing: -.07em; margin-top: 8px; }
+.single-status {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(107,151,0,.16);
+  border-radius: 999px;
+  background: rgba(199,244,66,.2);
+  color: #446500;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 950;
+}
+.single-workspace {
+  margin-top: 14px;
+  border: 1px solid rgba(17,17,17,.08);
+  border-radius: 32px;
+  background: rgba(255,255,255,.82);
+  padding: 10px;
+  box-shadow: 0 16px 46px rgba(20,24,16,.08);
+}
+.single-workspace .model-card,
+.single-workspace .model-card.compact {
+  border-color: rgba(17,17,17,.08);
+  background: linear-gradient(180deg, #ffffff 0%, #f4f6ef 100%);
+  box-shadow: none;
+}
+.single-workspace .model-title,
+.single-workspace .model-file,
+.single-workspace .model-meta span { color: #111; }
+.single-workspace .model-sub,
+.single-workspace .model-size { color: #6f736b; }
+.single-workspace .model-stage {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(199,244,66,.34), transparent 30%),
+    linear-gradient(135deg, #eef2e8 0%, #ffffff 100%);
+}
+.workspace-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin: 10px 0;
+}
+.workspace-steps span {
+  border-radius: 999px;
+  background: #f0f2ea;
+  color: #555c4d;
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 950;
+}
+.single-thread { margin-top: 10px; }
+.single-work-root .chat-bubble {
+  background: #f5f6f0;
+  border-color: rgba(17,17,17,.06);
+  color: #222;
+  box-shadow: none;
+}
+.single-work-root .chat-row.user .chat-bubble {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+.single-work-root .chat-avatar,
+.single-work-root .chat-bot-avatar {
+  background: #c7f442;
+  border-color: rgba(17,17,17,.12);
+  box-shadow: none;
+}
+.single-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr .75fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.single-actions button {
+  border: 1px solid rgba(17,17,17,.08);
+  border-radius: 20px;
+  background: #111;
+  color: white;
+  min-height: 50px;
+  font-size: 13px;
+  font-weight: 950;
+  box-shadow: 0 12px 26px rgba(17,17,17,.10);
+}
+.single-actions button:first-child { background: #c7f442; color: #111; }
+.single-actions button:nth-child(2) { background: #ff9f43; color: #111; }
+.single-composer {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 16px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(17,17,17,.08);
+  border-radius: 24px;
+  background: rgba(255,255,255,.92);
+  padding: 8px;
+  box-shadow: 0 18px 42px rgba(17,17,17,.14);
+  backdrop-filter: blur(18px);
+}
+.single-composer input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #111;
+  font-size: 13px;
+  font-weight: 800;
+}
+.single-composer input::placeholder { color: #8b9185; }
+.composer-icon,
+.composer-send {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 16px;
+}
+.composer-icon { background: #f0f2ea; color: #555c4d; }
+.composer-send { background: #c7f442; color: #111; }
+@media (max-width: 430px) {
+  .single-hero .h1 { font-size: 31px; }
+  .single-work-screen { padding-left: 14px; padding-right: 14px; }
+}

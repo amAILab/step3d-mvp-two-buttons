@@ -443,20 +443,14 @@ function ChatMessage({ from = "bot", children, delay = 0 }) {
 function HomeScreen({ setScreen, openMenu, order, setOrder }) {
   const [draft, setDraft] = useState("");
   const quickActions = [
-    ["Узнать цену", "consult"],
-    ["Создать заявку", "create"],
-    ["Открыть 3D", "upload"],
-    ["Сделать по фото", "photo"],
+    ["Узнать", "consult"],
+    ["Создать", "create"],
+    ["Файл", "upload"],
   ];
 
   const startFlow = (mode) => {
     if (mode === "upload") {
       setOrder({ ...order, mode: "create", files: order.files.length ? order.files : ["case_v3.stl"] });
-      setScreen("order");
-      return;
-    }
-    if (mode === "photo") {
-      setOrder({ ...order, mode: "consult", serviceId: "model", task: order.task || "Есть фото детали, нужно понять возможность моделирования и печати." });
       setScreen("order");
       return;
     }
@@ -471,57 +465,44 @@ function HomeScreen({ setScreen, openMenu, order, setOrder }) {
   };
 
   return (
-    <div className="screen-root chat-home-root">
-      <Header title="3D чат" screen="home" setScreen={setScreen} onMenu={openMenu} />
-      <Screen className="chat-first-screen">
-        <div className="chat-hero">
-          <div className="kicker"><Sparkles size={13} /> Step3D Bot</div>
-          <h1 className="h1">Опишите задачу — модель рядом</h1>
-          <p className="text">Минимум экранов: бот ведёт по заказу, а 3D-превью остаётся под рукой для проверки формы, размеров и материала.</p>
-          <div className="hero-status-row">
-            <span><span className="live-dot" /> инженер на связи</span>
-            <span>STL · OBJ · GLB · STEP</span>
-            <span>без оплаты на старте</span>
+    <div className="screen-root single-work-root">
+      <Header title="STEP_3D" screen="home" setScreen={setScreen} onMenu={openMenu} />
+      <Screen className="single-work-screen">
+        <section className="single-hero">
+          <div>
+            <div className="kicker"><Sparkles size={13} /> один экран</div>
+            <h1 className="h1">Чат и 3D — рядом</h1>
+            <p className="text">Работаем в одном светлом пространстве: пишете задачу, смотрите модель, сразу уточняете цену, материал и срок.</p>
           </div>
-        </div>
+          <div className="single-status"><span className="live-dot" /> инженер онлайн</div>
+        </section>
 
-        <div className="decision-strip">
-          <div><span>1</span><b>Опишите</b><small>идею, поломку или файл</small></div>
-          <div><span>2</span><b>Уточните</b><small>размер, материал, срок</small></div>
-          <div><span>3</span><b>Получите</b><small>оценку и маршрут</small></div>
-        </div>
-
-        <div className="pinned-model-panel">
-          <ModelPreviewCard compact />
-        </div>
-
-        <div className="progress-rail">
-          <div className="progress-step done"><Upload size={13} />Файл</div>
-          <div className="progress-step active"><MessageSquare size={13} />Диалог</div>
-          <div className="progress-step"><Check size={13} />Оценка</div>
-        </div>
-
-        <div className="chat-thread main-thread">
-          <ChatMessage delay={0.03}>Привет. Загрузите 3D-модель или опишите деталь — я соберу данные для оценки без длинной анкеты.</ChatMessage>
-          <ChatMessage from="user" delay={0.08}>Хочу загрузить модель и понять цену.</ChatMessage>
-          <ChatMessage delay={0.13}>Отлично. Я держу модель в отдельной 3D-панели и задаю только важные вопросы: назначение, материал, количество, срок.</ChatMessage>
-          <div className="chat-row bot model-message">
-            <div className="chat-avatar"><Box size={15} /></div>
-            <div className="chat-bubble model-bubble"><ModelPreviewCard /></div>
+        <section className="single-workspace">
+          <div className="viewer-pane">
+            <ModelPreviewCard compact />
           </div>
-          <ChatMessage delay={0.18}>В конце покажу чистое резюме заявки: файл, размеры, материал, срок и контакт — перед отправкой можно поправить.</ChatMessage>
-        </div>
+          <div className="workspace-steps">
+            <span>Модель</span>
+            <span>Диалог</span>
+            <span>Оценка</span>
+          </div>
+          <div className="chat-thread single-thread">
+            <ChatMessage delay={0.03}>Привет. Пришлите 3D-файл, фото или просто опишите деталь — всё разбираем здесь же.</ChatMessage>
+            <ChatMessage from="user" delay={0.08}>Хочу понять, можно ли это напечатать и сколько будет стоить.</ChatMessage>
+            <ChatMessage delay={0.13}>Можно. Я покажу модель в 3D, уточню размеры, материал и срок — без длинной анкеты и без оплаты на старте.</ChatMessage>
+          </div>
+        </section>
 
-        <div className="quick-chat-actions primary-actions">
+        <div className="single-actions">
           {quickActions.map(([label, mode]) => (
             <button key={label} onClick={() => startFlow(mode)}>{label}</button>
           ))}
         </div>
 
-        <div className="chat-composer home-composer">
-          <button className="chat-attach" onClick={() => startFlow("upload")} aria-label="Загрузить модель"><Upload size={18} /></button>
-          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите задачу: напечатать, оценить, сделать по фото..." />
-          <button className="chat-send" onClick={sendDraft} aria-label="Отправить"><Send size={18} /></button>
+        <div className="single-composer">
+          <button className="composer-icon" onClick={() => startFlow("upload")} aria-label="Загрузить файл"><Upload size={18} /></button>
+          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите задачу или вопрос по модели..." />
+          <button className="composer-send" onClick={sendDraft} aria-label="Отправить"><Send size={18} /></button>
         </div>
       </Screen>
     </div>
@@ -1378,7 +1359,7 @@ export default function App() {
     showToast(order.mode === "create" ? "Заявка отправлена" : "Запрос отправлен");
   };
 
-  const showTabs = screen !== "menu";
+  const showTabs = screen !== "menu" && screen !== "home";
 
   return (
     <div className="app-stage">
