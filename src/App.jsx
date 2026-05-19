@@ -956,14 +956,19 @@ function StatusScreen({ setScreen, openMenu, selectedOrder, orderNumber, order }
 
 function HelpScreen({ setScreen, openMenu, order, setOrder }) {
   const [draft, setDraft] = useState("");
-  const quickQuestions = ["Загрузить модель", "Узнать цену", "Нет модели", "Сроки"];
+  const quickQuestions = ["Как выбрать материал?", "Нужен ли STL?", "Почему цена разная?", "Что проверить перед печатью?"];
+  const lessons = [
+    ["1", "Идея", "Понимаем задачу и назначение детали"],
+    ["2", "Модель", "Файл, фото, эскиз или замер"],
+    ["3", "Печать", "Материал, прочность, срок и цена"],
+  ];
   const messages = [
-    { from: "bot", text: "Привет. Я чат-бот STEP_3D: можно говорить текстом, а модель смотреть здесь же в 3D." },
-    { from: "user", text: "Хочу узнать, можно ли изготовить деталь." },
-    { from: "bot", text: "Можно. Пришлите STL, OBJ, GLB, STEP, 3MF, фото, эскиз, PDF или просто описание задачи." },
-    { from: "bot", text: "Для быстрой оценки нужны: размеры, материал, назначение детали, срок и 1–3 фото или файл модели." },
-    { from: "user", text: "А если 3D-модели нет?" },
-    { from: "bot", text: "Тоже подходит. Опишите деталь, приложите фото с линейкой — мы оценим моделирование, скан или реверс-инжиниринг." },
+    { from: "bot", text: "Привет. Я образовательный бот STEP_3D: объясняю простыми словами, как устроена 3D-печать и как подготовить задачу." },
+    { from: "user", text: "Я не понимаю, с чего начать." },
+    { from: "bot", text: "Начнём спокойно. Сначала выясняем, что должна делать деталь: держать нагрузку, выглядеть красиво, заменить сломанную часть или стать прототипом." },
+    { from: "bot", text: "Потом смотрим, что у вас есть: 3D-файл, фото, чертёж, размеры или просто идея. Любой вариант подходит для старта." },
+    { from: "user", text: "А если я не знаю материал?" },
+    { from: "bot", text: "Это нормально. Я подскажу: PLA — для макетов, PETG — прочнее и практичнее, ABS — для нагрузки и температуры, смола — для детализации." },
   ];
 
   const sendDraft = () => {
@@ -971,19 +976,31 @@ function HelpScreen({ setScreen, openMenu, order, setOrder }) {
   };
 
   return (
-    <div className="screen-root">
-      <Header title="Помощь" screen="help" setScreen={setScreen} onMenu={openMenu} />
-      <Screen className="chat-screen">
-        <div className="chat-intro">
+    <div className="screen-root learn-root">
+      <Header title="Узнать" screen="help" setScreen={setScreen} onMenu={openMenu} />
+      <Screen className="chat-screen learn-screen">
+        <div className="chat-intro learn-intro">
           <div>
-            <div className="kicker"><MessageSquare size={13} /> Чат-помощник</div>
-            <h2 className="h2">Спросите как в чате</h2>
-            <p className="text">Диалог ведёт по задаче, а 3D-карточка показывает модель изолированно и удобно.</p>
+            <div className="kicker"><Bot size={13} /> Образовательный чат</div>
+            <h2 className="h2">Бот ведёт и просвещает</h2>
+            <p className="text">Не заставляем сразу оформлять заказ. Объясняем, какие бывают файлы, материалы, сроки и что влияет на цену.</p>
           </div>
-          <div className="chat-bot-avatar"><Bot size={25} /></div>
+          <div className="chat-bot-avatar"><Sparkles size={25} /></div>
         </div>
 
-        <div className="chat-thread">
+        <div className="learning-path">
+          {lessons.map(([num, title, text]) => (
+            <div className="lesson-card" key={title}>
+              <div className="lesson-num">{num}</div>
+              <div>
+                <div className="lesson-title">{title}</div>
+                <div className="lesson-text">{text}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="chat-thread learn-thread">
           {messages.map((message, index) => (
             <motion.div
               key={`${message.from}-${index}`}
@@ -998,25 +1015,30 @@ function HelpScreen({ setScreen, openMenu, order, setOrder }) {
           ))}
         </div>
 
-        <div className="chat-row bot model-message">
-          <div className="chat-avatar"><Box size={15} /></div>
-          <div className="chat-bubble model-bubble"><ModelPreviewCard /></div>
-        </div>
+        <Card className="learn-card mt-4">
+          <div className="title-sm"><HelpCircle size={17} /> Что можно узнать здесь</div>
+          <div className="learn-grid mt-3">
+            <span>как подготовить STL/STEP</span>
+            <span>какой материал выбрать</span>
+            <span>почему важны размеры</span>
+            <span>как считается цена</span>
+          </div>
+        </Card>
 
-        <div className="quick-chat-actions">
+        <div className="quick-chat-actions learn-actions">
           {quickQuestions.map((question) => (
             <button key={question} onClick={() => setDraft(question)}>{question}</button>
           ))}
         </div>
 
         <div className="chat-composer">
-          <button className="chat-attach" aria-label="Голос"><Mic size={18} /></button>
-          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Напишите вопрос или задачу..." />
+          <button className="chat-attach" aria-label="Задать голосом"><Mic size={18} /></button>
+          <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Спросите про 3D-печать, модель, материал или цену..." />
           <button className="chat-send" onClick={sendDraft} aria-label="Отправить"><Send size={18} /></button>
         </div>
 
-        <button className="chat-create" onClick={() => setScreen("order")}>
-          <span>Перейти к заявке</span>
+        <button className="chat-create" onClick={() => { setOrder({ ...order, mode: "consult", task: draft || order.task }); setScreen("order"); }}>
+          <span>Перейти от обучения к оценке</span>
           <ChevronRight size={18} />
         </button>
       </Screen>

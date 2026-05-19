@@ -845,6 +845,59 @@ body {
   border-color: rgba(255,255,255,.09);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 28px rgba(0,0,0,.18);
 }
+
+/* Educational bot section */
+.learn-intro {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255,159,67,.18), transparent 34%),
+    linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+}
+.learning-path {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+.lesson-card {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  padding: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+.lesson-num {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #c7f442;
+  color: #08090a;
+  font-weight: 950;
+}
+.lesson-title { color: #f7f8f8; font-size: 13px; font-weight: 950; }
+.lesson-text { margin-top: 2px; color: #8a8f98; font-size: 11px; line-height: 1.35; font-weight: 750; }
+.learn-thread { margin-top: 16px; }
+.learn-card { border-color: rgba(199,244,66,.14); }
+.learn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.learn-grid span {
+  border-radius: 14px;
+  background: rgba(199,244,66,.08);
+  border: 1px solid rgba(199,244,66,.14);
+  color: #dfffa0;
+  padding: 9px;
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 850;
+}
+.learn-actions button:first-child { background: rgba(199,244,66,.14); border-color: rgba(199,244,66,.24); color: #eaffb7; }
 .primary-actions button:first-child,
 .primary-actions button:nth-child(2) {
   color: #0a0a0a;
